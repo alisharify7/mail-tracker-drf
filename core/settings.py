@@ -83,11 +83,16 @@ WSGI_APPLICATION = "core.wsgi.application"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config("DATABASE_NAME", cast=str),
+        'USER': config("DATABASE_USERNAME", cast=str),
+        'PASSWORD': config("DATABASE_PASSWORD", cast=str),
+        'HOST': config("DATABASE_HOST", default="localhost", cast=str),
+        'PORT': config("DATABASE_PORT", cast=int, default=5432),
     }
 }
+
 
 
 # Password validation
@@ -112,7 +117,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = "asia/Tehran"
+LANGUAGE_CODE = "en-US"
 
 TIME_ZONE = "UTC"
 
