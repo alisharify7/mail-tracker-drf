@@ -46,7 +46,7 @@ class Mail(models.Model):
     )
 
     class Meta:
-        db_table = "mail"
+        # db_table = "mail"
         verbose_name = _("Mail")
         verbose_name_plural = _("Mails")
 
@@ -123,7 +123,7 @@ class CarbonCopy(models.Model):
     modified_time = models.DateTimeField(auto_now=True, verbose_name=_("modified time"))
 
     class Meta:
-        db_table = "carbon_copy"
+        # db_table = "carbon_copy"
         verbose_name = _("Carbon Copy")
         verbose_name_plural = _("Carbon Copies")
 
