@@ -14,7 +14,6 @@ import secrets
 from pathlib import Path
 from decouple import config
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -47,6 +46,7 @@ INSTALLED_APPS = [
     "mailer.apps.MailerConfig",
     "tracking.apps.TrackingConfig",
     "analytics.apps.AnalyticsConfig",
+    "attachments.apps.AttachmentsConfig",
 ]
 
 MIDDLEWARE = [
@@ -138,11 +138,11 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Aws config ->  django-storages
-AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID", required=True, cast=str)
-AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY", required=True, cast=str)
-AWS_STORAGE_BUCKET_NAME = config("AWS_BUCKET_NAME", required=True, cast=str)
-AWS_S3_REGION_NAME = config("AWS_REGION", default="Simin", required=True, cast=str)
-AWS_S3_CUSTOM_DOMAIN = config("AWS_BUCKET_URL", required=True, cast=str)
+AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID", cast=str)
+AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY", cast=str)
+AWS_STORAGE_BUCKET_NAME = config("AWS_BUCKET_NAME",  cast=str)
+AWS_S3_REGION_NAME = config("AWS_REGION", default="Simin", cast=str)
+AWS_S3_CUSTOM_DOMAIN = config("AWS_BUCKET_URL", cast=str)
 
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/media/"
