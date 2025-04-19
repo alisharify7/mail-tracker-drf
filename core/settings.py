@@ -41,9 +41,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
-    "taggit",
-    "rest_framework",
+    "taggit",  # django-taggit
+    "storages",  # django-storages
+    "rest_framework",  # DRF
     "mailer.apps.MailerConfig",
     "tracking.apps.TrackingConfig",
     "analytics.apps.AnalyticsConfig",
@@ -112,7 +112,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "asia/Tehran"
 
 TIME_ZONE = "UTC"
 
@@ -129,4 +129,15 @@ STATIC_URL = "static/"
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Aws config ->  django-storages
+AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID", required=True, cast=str)
+AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY", required=True, cast=str)
+AWS_STORAGE_BUCKET_NAME = config("AWS_BUCKET_NAME", required=True, cast=str)
+AWS_S3_REGION_NAME = config("AWS_REGION", default="Simin", required=True, cast=str)
+AWS_S3_CUSTOM_DOMAIN = config("AWS_BUCKET_URL", required=True, cast=str)
+
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/media/"
