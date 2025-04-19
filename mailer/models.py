@@ -67,3 +67,36 @@ class Mail(models.Model):
                 return True
         return False
 
+    def __str__(self):
+        return f"{self.pk}-{self.subject}"
+
+class CarbonCopy(models.Model):
+    """
+    Represents a CC recipient for an email.
+    """
+    email_address = models.EmailField(
+        verbose_name=_("email address"),
+        max_length=254, blank=False, null=False
+    )
+    mail = models.ForeignKey(
+        Mail,
+        verbose_name=_("mail"),
+        on_delete=models.CASCADE,
+        related_name="carbon_copies"
+    )
+    created_time = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_("created time")
+    )
+    modified_time = models.DateTimeField(
+        auto_now=True,
+        verbose_name=_("modified time")
+    )
+
+    class Meta:
+        db_table = 'carbon_copy'
+        verbose_name = _("Carbon Copy")
+        verbose_name_plural = _("Carbon Copies")
+
+    def __str__(self):
+        return f"{self.email_address} (Mail #{self.mail_id})"
