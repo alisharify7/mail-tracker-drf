@@ -98,6 +98,14 @@ class Mail(models.Model):
                 self.public_key = key
                 return True
         return False
+    
+    def save(self, *args, **kwargs):
+        if not self.public_key:
+            if not self.set_public_key():
+                raise ValueError("Failed to generate unique public key")
+        super().save(*args, **kwargs)
+        
+
 
     def __str__(self):
         return f"{self.pk}-{self.subject}"
