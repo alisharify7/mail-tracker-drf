@@ -143,11 +143,9 @@ AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID", cast=str)
 AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY", cast=str)
 AWS_STORAGE_BUCKET_NAME = config("AWS_BUCKET_NAME",  cast=str)
 AWS_S3_REGION_NAME = config("AWS_REGION", default="Simin", cast=str)
-AWS_S3_CUSTOM_DOMAIN = config("AWS_BUCKET_URL", cast=str)
-AWS_S3_ENDPOINT_URL = f"https://{AWS_STORAGE_BUCKET_NAME}.{AWS_S3_CUSTOM_DOMAIN}/"
+AWS_S3_ENDPOINT_URL = config("AWS_BUCKET_URL", cast=str)
+AWS_S3_CUSTOM_DOMAIN = config("AWS_CUSTOM_DOMAIN", cast=str)
 AWS_DEFAULT_ACL = "public-read"
-
-
 MEDIA_URL = f"{AWS_S3_ENDPOINT_URL}/media/"
 
 
