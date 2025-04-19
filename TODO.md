@@ -1,3 +1,7 @@
 - [x] create core project
 - [x] create required apps
 - [x] base db scheme (image)
+- [x] add postgres db backend
+- [x] add docker file
+- [x] add docker compose
+- [x] add email config
