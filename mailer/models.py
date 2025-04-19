@@ -11,7 +11,7 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from taggit.managers import TaggableManager
-
+from attachments.models import Attachment
 
 class Mail(models.Model):
     """
@@ -54,6 +54,7 @@ class Mail(models.Model):
     created_time = models.DateTimeField(
         verbose_name=_("created time"), auto_now_add=True
     )
+    attachments = models.ManyToManyField(Attachment, related_name='mails', blank=True)
     modified_time = models.DateTimeField(verbose_name=_("modified time"), auto_now=True)
     public_key = models.CharField(
         verbose_name=_("public key"),
