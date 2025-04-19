@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "attachments.apps.AttachmentsConfig",
 ]
 
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -143,9 +144,21 @@ AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY", cast=str)
 AWS_STORAGE_BUCKET_NAME = config("AWS_BUCKET_NAME",  cast=str)
 AWS_S3_REGION_NAME = config("AWS_REGION", default="Simin", cast=str)
 AWS_S3_CUSTOM_DOMAIN = config("AWS_BUCKET_URL", cast=str)
+AWS_S3_ENDPOINT_URL = f"https://{AWS_STORAGE_BUCKET_NAME}.{AWS_S3_CUSTOM_DOMAIN}/"
+AWS_DEFAULT_ACL = "public-read"
 
-DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/media/"
+
+MEDIA_URL = f"{AWS_S3_ENDPOINT_URL}/media/"
+
+
+STORAGES = {
+    'default': {
+        'BACKEND': 'storages.backends.s3boto3.S3Boto3Storage',
+    },
+    'staticfiles': {
+        'BACKEND': 'storages.backends.s3boto3.S3Boto3Storage',
+    },
+}
 
 # Email Config
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' if DEBUG else 'django.core.mail.backends.smtp.EmailBackend'
