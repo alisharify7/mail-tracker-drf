@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
+    "taggit",
     "rest_framework",
     "mailer.apps.MailerConfig",
     "tracking.apps.TrackingConfig",
