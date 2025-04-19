@@ -33,6 +33,17 @@ class Mail(models.Model):
         modified_time (datetime): Timestamp for the last update to the email object.
         public_key (str): A unique public identifier (e.g., for tracking links).
     """
+    PENDING = 1
+    SENT = 2
+    FAILED = 3
+    UNKNOWN = 4
+
+    STATUS_CHOICES = (
+        (PENDING, _('Pending')),
+        (SENT, _('Sent')),
+        (FAILED, _('Failed')),
+        (UNKNOWN, _('Unknown')),
+    )
 
     class Meta:
         db_table = "mail"
@@ -62,6 +73,11 @@ class Mail(models.Model):
         blank=False,
         null=False,
         unique=True,
+    )
+
+    status = models.PositiveSmallIntegerField(
+        choices=STATUS_CHOICES,
+        default=STATUS_CHOICES[0][0],
     )
 
     tags = TaggableManager()
