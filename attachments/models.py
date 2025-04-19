@@ -34,6 +34,8 @@ class AttachmentType(models.Model):
         verbose_name=_("name"), max_length=256, blank=False, null=False
     )
 
+
+
     def __str__(self):
         return self.name
 
