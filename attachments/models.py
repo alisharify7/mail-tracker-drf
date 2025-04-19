@@ -81,6 +81,7 @@ class Attachment(models.Model):
         verbose_name = _("Attachment")
         verbose_name_plural = _("Attachments")
 
+
     def upload_and_set_url(self, file_obj, bucket: str, key: str) -> str:
         """
         Uploads the given file object to the specified S3-compatible bucket
