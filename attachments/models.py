@@ -35,6 +35,9 @@ class AttachmentType(models.Model):
     )
 
 
+    class Meta:
+        verbose_name = _("Attachment Type")
+        verbose_name_plural = _("Attachment Types")
 
     def __str__(self):
         return self.name
@@ -73,6 +76,11 @@ class Attachment(models.Model):
     created_time = models.DateTimeField(auto_now_add=True)
     modified_time = models.DateTimeField(auto_now=True)
 
+
+    class Meta:
+        verbose_name = _("Attachment")
+        verbose_name_plural = _("Attachments")
+        
     def upload_and_set_url(self, file_obj, bucket: str, key: str) -> str:
         """
         Uploads the given file object to the specified S3-compatible bucket
