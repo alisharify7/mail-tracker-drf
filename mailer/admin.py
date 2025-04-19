@@ -1,3 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+from mailer.models import Mail, CarbonCopy
+
+admin.site.register(Mail)
+admin.site.register(CarbonCopy)
