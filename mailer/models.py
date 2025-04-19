@@ -13,7 +13,6 @@ from django.utils.translation import gettext_lazy as _
 from taggit.managers import TaggableManager
 
 
-
 class Mail(models.Model):
     """
     Represents an email to be sent to a recipient.
@@ -36,17 +35,33 @@ class Mail(models.Model):
     """
 
     class Meta:
-        db_table = 'mail'
+        db_table = "mail"
         verbose_name = _("Mail")
         verbose_name_plural = _("Mails")
 
-    subject = models.CharField(verbose_name=_("subject"), max_length=256, blank=False, null=False)  
-    body = models.CharField(verbose_name=_("body"), max_length=8096, blank=False, null=False)
-    recipient = models.EmailField(verbose_name=_("recipient"), max_length=254, blank=False, null=False)
-    scheduled_time = models.DateTimeField(verbose_name=_("scheduled time"), blank=True, null=True)
-    created_time = models.DateTimeField(verbose_name=_("created time"), auto_now_add=True)
+    subject = models.CharField(
+        verbose_name=_("subject"), max_length=256, blank=False, null=False
+    )
+    body = models.CharField(
+        verbose_name=_("body"), max_length=8096, blank=False, null=False
+    )
+    recipient = models.EmailField(
+        verbose_name=_("recipient"), max_length=254, blank=False, null=False
+    )
+    scheduled_time = models.DateTimeField(
+        verbose_name=_("scheduled time"), blank=True, null=True
+    )
+    created_time = models.DateTimeField(
+        verbose_name=_("created time"), auto_now_add=True
+    )
     modified_time = models.DateTimeField(verbose_name=_("modified time"), auto_now=True)
-    public_key = models.CharField(verbose_name=_("public key"), max_length=32, blank=False, null=False, unique=True)
+    public_key = models.CharField(
+        verbose_name=_("public key"),
+        max_length=32,
+        blank=False,
+        null=False,
+        unique=True,
+    )
 
     tags = TaggableManager()
 
@@ -70,31 +85,28 @@ class Mail(models.Model):
     def __str__(self):
         return f"{self.pk}-{self.subject}"
 
+
 class CarbonCopy(models.Model):
     """
     Represents a CC recipient for an email.
     """
+
     email_address = models.EmailField(
-        verbose_name=_("email address"),
-        max_length=254, blank=False, null=False
+        verbose_name=_("email address"), max_length=254, blank=False, null=False
     )
     mail = models.ForeignKey(
         Mail,
         verbose_name=_("mail"),
         on_delete=models.CASCADE,
-        related_name="carbon_copies"
+        related_name="carbon_copies",
     )
     created_time = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name=_("created time")
+        auto_now_add=True, verbose_name=_("created time")
     )
-    modified_time = models.DateTimeField(
-        auto_now=True,
-        verbose_name=_("modified time")
-    )
+    modified_time = models.DateTimeField(auto_now=True, verbose_name=_("modified time"))
 
     class Meta:
-        db_table = 'carbon_copy'
+        db_table = "carbon_copy"
         verbose_name = _("Carbon Copy")
         verbose_name_plural = _("Carbon Copies")
 
