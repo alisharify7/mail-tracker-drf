@@ -1,0 +1,3 @@
+- [x] create core project
+- [x] create required apps
+- [x] base db scheme (image)
