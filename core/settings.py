@@ -152,7 +152,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' if DEBUG else '
 
 EMAIL_HOST = config("EMAIL_HOST", cast=str)
 EMAIL_PORT = config("EMAIL_PORT", cast=int, default=465)
-EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool, default=True)
+EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool)
+EMAIL_USE_SSL = config("EMAIL_USE_SSL", cast=bool)
 EMAIL_HOST_USER = config("EMAIL_HOST_USER", cast=str)
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", cast=str)
 DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", cast=str)
