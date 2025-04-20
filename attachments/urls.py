@@ -11,6 +11,10 @@ from django.urls import path
 from attachments import views
 
 urlpatterns = [
-    path("<str:public_key>", views.RetrieveDestroyAttachmentView.as_view(), name="details-attachment"),
+    path(
+        "<str:public_key>",
+        views.RetrieveDestroyAttachmentView.as_view(),
+        name="details-attachment",
+    ),
     path("", views.CreateListAttachmentView.as_view(), name="create-list-attachment"),
 ]

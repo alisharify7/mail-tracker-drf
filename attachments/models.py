@@ -112,7 +112,9 @@ class Attachment(TimestampedUUIDBaseModel):
         """
         if self.file:
             self.file.delete()  # Deletes the file from storage (S3, local, etc.)
-        super().delete(*args, **kwargs)  # Call the parent delete method to remove the record from the database
+        super().delete(
+            *args, **kwargs
+        )  # Call the parent delete method to remove the record from the database
 
     def save(self, *args, **kwargs):
         """
@@ -134,4 +136,3 @@ class Attachment(TimestampedUUIDBaseModel):
                 self.attachment_type = attachment_type
 
         super().save(*args, **kwargs)
-
