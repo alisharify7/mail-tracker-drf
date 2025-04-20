@@ -14,7 +14,7 @@ from attachments.models import Attachment
 from attachments.serializers import AttachmentSerializer
 
 
-class CreateListAttachmentView(ListCreateAPIView):
+class ListCreateAttachmentView(ListCreateAPIView):
     """Create a new attachment or list all attachments with pagination."""
 
     queryset = Attachment.objects.all().order_by("-created_time")

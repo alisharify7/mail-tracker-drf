@@ -16,5 +16,5 @@ urlpatterns = [
         views.RetrieveDestroyAttachmentView.as_view(),
         name="details-attachment",
     ),
-    path("", views.CreateListAttachmentView.as_view(), name="create-list-attachment"),
+    path("", views.ListCreateAttachmentView.as_view(), name="create-list-attachment"),
 ]
