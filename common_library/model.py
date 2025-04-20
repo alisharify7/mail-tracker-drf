@@ -11,6 +11,7 @@ import uuid
 from django.db import models, transaction, IntegrityError
 from django.utils.translation import gettext_lazy as _
 
+
 # Separation of Concerns
 class TimestampedBaseModel(models.Model):
     """
@@ -21,15 +22,14 @@ class TimestampedBaseModel(models.Model):
         created_time (datetime): Timestamp when the object was created.
         modified_time (datetime): Timestamp when the object was last modified.
     """
+
     class Meta:
         abstract = True
 
     created_time = models.DateTimeField(
         verbose_name=_("created time"), auto_now_add=True
     )
-    modified_time = models.DateTimeField(
-        verbose_name=_("modified time"), auto_now=True
-    )
+    modified_time = models.DateTimeField(verbose_name=_("modified time"), auto_now=True)
 
 
 class TimestampedUUIDBaseModel(TimestampedBaseModel):
@@ -49,7 +49,7 @@ class TimestampedUUIDBaseModel(TimestampedBaseModel):
     class Meta:
         abstract = True
 
-    public_key = models.CharField( # UUIDField
+    public_key = models.CharField(  # UUIDField
         verbose_name=_("public key"),
         max_length=32,
         blank=False,
@@ -104,5 +104,7 @@ class TimestampedUUIDBaseModel(TimestampedBaseModel):
                         return super().save(*args, **kwargs)
                 except IntegrityError:
                     continue
-            raise ValueError("Failed to generate unique public key after multiple retries")
+            raise ValueError(
+                "Failed to generate unique public key after multiple retries"
+            )
         return super().save(*args, **kwargs)

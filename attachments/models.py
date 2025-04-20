@@ -15,8 +15,10 @@ from datetime import datetime
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from common_library.model import TimestampedUUIDBaseModel, TimestampedBaseModel
 
-class AttachmentType(models.Model):
+
+class AttachmentType(TimestampedBaseModel):
     """
     Represents a type or category for an attachment.
 
@@ -31,6 +33,11 @@ class AttachmentType(models.Model):
         __str__(): Returns the name of the attachment type as a string.
     """
 
+    class Meta:
+        verbose_name = _("Attachment Type")
+        verbose_name_plural = _("Attachment Types")
+        unique_together = ("main_type", "sub_type")
+
     # image, video, application
     main_type = models.CharField(
         verbose_name=_("main_type"), max_length=256, blank=False, null=False
@@ -40,11 +47,6 @@ class AttachmentType(models.Model):
     sub_type = models.CharField(
         verbose_name=_("sub_type"), max_length=256, blank=False, null=False
     )
-
-    class Meta:
-        verbose_name = _("Attachment Type")
-        verbose_name_plural = _("Attachment Types")
-        unique_together = ("main_type", "sub_type")
 
     def __str__(self):
         return f"{self.main_type}/{self.sub_type}"
@@ -66,7 +68,7 @@ def attachment_upload_to(instance, filename):
     return f"attachments/{date_path}/{new_filename}"
 
 
-class Attachment(models.Model):
+class Attachment(TimestampedUUIDBaseModel):
     """
     Represents a file attachment associated with an email or any other entity.
 
@@ -77,14 +79,17 @@ class Attachment(models.Model):
         modified_time (datetime): Timestamp when this attachment was last modified.
     """
 
+    class Meta:
+        verbose_name = _("Attachment")
+        verbose_name_plural = _("Attachments")
+
     name = models.CharField(_("name"), max_length=255)
     file = models.FileField(
         _("file"),
         upload_to=attachment_upload_to,
         max_length=1024,
     )
-    created_time = models.DateTimeField(auto_now_add=True)
-    modified_time = models.DateTimeField(auto_now=True)
+
     attachment_type = models.ForeignKey(
         AttachmentType,
         verbose_name=_("Attachment Type"),
@@ -105,7 +110,3 @@ class Attachment(models.Model):
                 )
                 self.attachment_type = attachment_type
         super().save(*args, **kwargs)
-
-    class Meta:
-        verbose_name = _("Attachment")
-        verbose_name_plural = _("Attachments")

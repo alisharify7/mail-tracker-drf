@@ -7,14 +7,14 @@
 * https://github.com/alisharify7/mail-tracker-drf
 """
 
-import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from taggit.managers import TaggableManager
 from attachments.models import Attachment
+from common_library.model import TimestampedUUIDBaseModel, TimestampedBaseModel
 
 
-class Mail(models.Model):
+class Mail(TimestampedUUIDBaseModel):
     """
     Represents an email to be sent to a recipient.
 
@@ -64,18 +64,8 @@ class Mail(models.Model):
     scheduled_time = models.DateTimeField(
         verbose_name=_("scheduled time"), blank=True, null=True
     )
-    created_time = models.DateTimeField(
-        verbose_name=_("created time"), auto_now_add=True
-    )
+
     attachments = models.ManyToManyField(Attachment, related_name="mails", blank=True)
-    modified_time = models.DateTimeField(verbose_name=_("modified time"), auto_now=True)
-    public_key = models.CharField(
-        verbose_name=_("public key"),
-        max_length=32,
-        blank=False,
-        null=False,
-        unique=True,
-    )
 
     status = models.PositiveSmallIntegerField(
         choices=STATUS_CHOICES,
@@ -84,34 +74,16 @@ class Mail(models.Model):
 
     tags = TaggableManager()
 
-    def set_public_key(self, max_retry: int = 10) -> bool:
-        """
-        Generates a unique public_key and assigns it to the instance.
-
-        Args:
-            max_retry (int): Maximum number of attempts to find a unique key.
-
-        Returns:
-            bool: True if a unique key was found and assigned, False otherwise.
-        """
-        for _ in range(max_retry):
-            key = uuid.uuid4().hex
-            if not self.__class__.objects.filter(public_key=key).exists():
-                self.public_key = key
-                return True
-        return False
-
-    def save(self, *args, **kwargs):
-        if not self.public_key:
-            if not self.set_public_key():
-                raise ValueError("Failed to generate unique public key")
-        super().save(*args, **kwargs)
+    def __repr__(self):
+        return (
+            f"{self.__class__.__name__}(subject={self.subject!r}, body={self.body!r})"
+        )
 
     def __str__(self):
         return f"{self.pk}-{self.subject}"
 
 
-class CarbonCopy(models.Model):
+class CarbonCopy(TimestampedBaseModel):
     """
     Represents a CC recipient for an email.
     """
@@ -125,10 +97,6 @@ class CarbonCopy(models.Model):
         on_delete=models.CASCADE,
         related_name="carbon_copies",
     )
-    created_time = models.DateTimeField(
-        auto_now_add=True, verbose_name=_("created time")
-    )
-    modified_time = models.DateTimeField(auto_now=True, verbose_name=_("modified time"))
 
     class Meta:
         # db_table = "carbon_copy"
