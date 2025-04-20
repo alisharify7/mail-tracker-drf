@@ -7,17 +7,16 @@
 * https://github.com/alisharify7/mail-tracker-drf
 """
 
-from rest_framework.views import APIView
-from rest_framework import status
-from rest_framework.response import Response
+from rest_framework.generics import ListCreateAPIView, RetrieveDestroyAPIView
 
+from mailer.models import Mail
 from mailer.serializers import MailSerializer
-from attachments.models import Attachment
 
 
-class MailView(APIView):
-    def post(self, request, *args, **kwargs):
-        serializer = MailSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+class ListCreateMailView(ListCreateAPIView):
+    serializer_class = MailSerializer
+    queryset = Mail.objects.all()
+
+class RetrieveDestroyViewMailView(RetrieveDestroyAPIView):
+    serializer_class = MailSerializer
+    queryset = Mail.objects.all()

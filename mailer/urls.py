@@ -12,5 +12,6 @@ from mailer import views
 
 
 urlpatterns = [
-    path("", views.MailView.as_view(), name="mail"),
+    path("", views.ListCreateMailView.as_view(), name="list-create-mail"),
+    path("<int:pk>/", views.RetrieveDestroyViewMailView.as_view(), name="retrieve-delete-mail"),
 ]

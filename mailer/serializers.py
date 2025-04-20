@@ -17,8 +17,8 @@ class MailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Mail
-        exclude = ["id"]
-        read_only_fields = ["created_time", "modified_time", "public_key"]
+        fields = '__all__'
+        read_only_fields = ["created_time", "modified_time", "public_key", "id"]
 
     def get_status(self, obj):
         return obj.get_status_display()
