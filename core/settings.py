@@ -84,16 +84,15 @@ WSGI_APPLICATION = "core.wsgi.application"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config("DATABASE_NAME", cast=str),
-        'USER': config("DATABASE_USERNAME", cast=str),
-        'PASSWORD': config("DATABASE_PASSWORD", cast=str),
-        'HOST': config("DATABASE_HOST", default="localhost", cast=str),
-        'PORT': config("DATABASE_PORT", cast=int, default=5432),
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": config("DATABASE_NAME", cast=str),
+        "USER": config("DATABASE_USERNAME", cast=str),
+        "PASSWORD": config("DATABASE_PASSWORD", cast=str),
+        "HOST": config("DATABASE_HOST", default="localhost", cast=str),
+        "PORT": config("DATABASE_PORT", cast=int, default=5432),
     }
 }
-
 
 
 # Password validation
@@ -141,7 +140,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Aws config ->  django-storages
 AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID", cast=str)
 AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY", cast=str)
-AWS_STORAGE_BUCKET_NAME = config("AWS_BUCKET_NAME",  cast=str)
+AWS_STORAGE_BUCKET_NAME = config("AWS_BUCKET_NAME", cast=str)
 AWS_S3_REGION_NAME = config("AWS_REGION", default="Simin", cast=str)
 AWS_S3_ENDPOINT_URL = config("AWS_BUCKET_URL", cast=str)
 AWS_S3_CUSTOM_DOMAIN = config("AWS_CUSTOM_DOMAIN", cast=str)
@@ -150,16 +149,20 @@ MEDIA_URL = f"{AWS_S3_ENDPOINT_URL}/media/"
 
 
 STORAGES = {
-    'default': {
-        'BACKEND': 'storages.backends.s3boto3.S3Boto3Storage',
+    "default": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
     },
-    'staticfiles': {
-        'BACKEND': 'storages.backends.s3boto3.S3Boto3Storage',
+    "staticfiles": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
     },
 }
 
 # Email Config
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' if DEBUG else 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = (
+    "django.core.mail.backends.console.EmailBackend"
+    if DEBUG
+    else "django.core.mail.backends.smtp.EmailBackend"
+)
 
 EMAIL_HOST = config("EMAIL_HOST", cast=str)
 EMAIL_PORT = config("EMAIL_PORT", cast=int, default=465)

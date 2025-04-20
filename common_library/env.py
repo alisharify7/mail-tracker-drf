@@ -9,4 +9,6 @@ def required_env(varname, **kwargs):
     try:
         return config(varname, **kwargs)
     except UndefinedValueError:
-        raise ImproperlyConfigured(f"Environment variable {varname!r} is required but not set.")
+        raise ImproperlyConfigured(
+            f"Environment variable {varname!r} is required but not set."
+        )

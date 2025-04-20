@@ -12,5 +12,5 @@ from mailer import views
 
 
 urlpatterns = [
-    path("", views.MailView.as_view(), name='mail'),
+    path("", views.MailView.as_view(), name="mail"),
 ]

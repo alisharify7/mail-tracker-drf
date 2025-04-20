@@ -97,38 +97,15 @@ class Attachment(models.Model):
     def save(self, *args, **kwargs):
         if self.file and not self.attachment_type:
             mime_type, _ = mimetypes.guess_type(self.file.name)
+            if mime_type:
+                main_type, sub_type = mime_type.split("/")
+                attachment_type, _ = AttachmentType.objects.get_or_create(
+                    main_type=main_type,
+                    sub_type=sub_type,
+                )
+                self.attachment_type = attachment_type
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = _("Attachment")
         verbose_name_plural = _("Attachments")
-        """
-        Uploads the given file object to the specified S3-compatible bucket
-        (e.g., Arvan S3) and updates this instance's `file` URL accordingly.
-
-        This method should be implemented only if the default Django storage
-        backend does not work with your S3 provider.
-
-        Args:
-            file_obj (File): Open file-like object to upload (e.g., InMemoryUploadedFile).
-            bucket (str): The name of the S3 bucket.
-            key (str): The object key (path) under which to store the file.
-
-        Returns:
-            str: The full URL of the uploaded file, which should then be saved
-                 into `self.file.name` or returned for later assignment.
-        """
-        # import boto3
-        # s3 = boto3.client(
-        #     "s3",
-        #     aws_access_key_id=...,
-        #     aws_secret_access_key=...,
-        #     region_name=...,
-        #     endpoint_url="https://s3.ir-thr-at1.arvanstorage.com"  # Arvan endpoint
-        # )
-        # s3.upload_fileobj(file_obj, bucket, key)
-        # url = f"https://{bucket}.s3.ir-thr-at1.arvanstorage.com/{key}"
-        # self.file.name = key  # so that file.url returns the right path
-        # self.save(update_fields=["file", "modified_time"])
-        # return url
-
-        raise NotImplementedError("upload_and_set_url must be implemented")

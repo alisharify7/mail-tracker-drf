@@ -12,6 +12,7 @@ from rest_framework import status
 from rest_framework.response import Response
 
 from mailer.serializers import MailSerializer
+from attachments.models import Attachment
 
 
 class MailView(APIView):
@@ -20,5 +21,3 @@ class MailView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-

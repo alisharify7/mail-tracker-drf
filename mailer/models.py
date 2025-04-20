@@ -13,6 +13,7 @@ from django.utils.translation import gettext_lazy as _
 from taggit.managers import TaggableManager
 from attachments.models import Attachment
 
+
 class Mail(models.Model):
     """
     Represents an email to be sent to a recipient.
@@ -33,16 +34,17 @@ class Mail(models.Model):
         modified_time (datetime): Timestamp for the last update to the email object.
         public_key (str): A unique public identifier (e.g., for tracking links).
     """
+
     PENDING = 1
     SENT = 2
     FAILED = 3
     UNKNOWN = 4
 
     STATUS_CHOICES = (
-        (PENDING, _('Pending')),
-        (SENT, _('Sent')),
-        (FAILED, _('Failed')),
-        (UNKNOWN, _('Unknown')),
+        (PENDING, _("Pending")),
+        (SENT, _("Sent")),
+        (FAILED, _("Failed")),
+        (UNKNOWN, _("Unknown")),
     )
 
     class Meta:
@@ -65,7 +67,7 @@ class Mail(models.Model):
     created_time = models.DateTimeField(
         verbose_name=_("created time"), auto_now_add=True
     )
-    attachments = models.ManyToManyField(Attachment, related_name='mails', blank=True)
+    attachments = models.ManyToManyField(Attachment, related_name="mails", blank=True)
     modified_time = models.DateTimeField(verbose_name=_("modified time"), auto_now=True)
     public_key = models.CharField(
         verbose_name=_("public key"),
@@ -98,14 +100,12 @@ class Mail(models.Model):
                 self.public_key = key
                 return True
         return False
-    
+
     def save(self, *args, **kwargs):
         if not self.public_key:
             if not self.set_public_key():
                 raise ValueError("Failed to generate unique public key")
         super().save(*args, **kwargs)
-        
-
 
     def __str__(self):
         return f"{self.pk}-{self.subject}"

@@ -7,7 +7,6 @@
 * https://github.com/alisharify7/mail-tracker-drf
 """
 
-
 from rest_framework import serializers
 
 from mailer.models import Mail
@@ -18,8 +17,8 @@ class MailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Mail
-        exclude = ['id']
-        read_only_fields = ['created_time', 'modified_time', 'public_key']
+        exclude = ["id"]
+        read_only_fields = ["created_time", "modified_time", "public_key"]
 
     def get_status(self, obj):
         return obj.get_status_display()
