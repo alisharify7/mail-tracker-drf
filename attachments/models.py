@@ -94,7 +94,9 @@ class Attachment(models.Model):
         related_name="attachments",
     )
 
+    def save(self, *args, **kwargs):
         if self.file and not self.attachment_type:
+            mime_type, _ = mimetypes.guess_type(self.file.name)
 
     class Meta:
         verbose_name = _("Attachment")
