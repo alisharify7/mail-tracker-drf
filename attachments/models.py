@@ -99,7 +99,30 @@ class Attachment(TimestampedUUIDBaseModel):
         related_name="attachments",
     )
 
+    def delete(self, *args, **kwargs):
+        """
+        Deletes the attachment instance, ensuring that the associated file is also removed from storage (e.g., S3).
+
+        This method overrides the default `delete()` method to ensure the file is deleted before removing the record
+        from the database.
+
+        Args:
+            *args: Positional arguments to be passed to the parent's `delete()` method.
+            **kwargs: Keyword arguments to be passed to the parent's `delete()` method.
+        """
+        if self.file:
+            self.file.delete()  # Deletes the file from storage (S3, local, etc.)
+        super().delete(*args, **kwargs)  # Call the parent delete method to remove the record from the database
+
     def save(self, *args, **kwargs):
+        """
+        Saves the attachment instance. If the file is provided but the attachment type is not set,
+        it will infer the type based on the file's MIME type (e.g., image/jpeg -> image, jpeg).
+
+        Args:
+            *args: Positional arguments to be passed to the parent's `save()` method.
+            **kwargs: Keyword arguments to be passed to the parent's `save()` method.
+        """
         if self.file and not self.attachment_type:
             mime_type, _ = mimetypes.guess_type(self.file.name)
             if mime_type:
@@ -109,4 +132,6 @@ class Attachment(TimestampedUUIDBaseModel):
                     sub_type=sub_type,
                 )
                 self.attachment_type = attachment_type
+
         super().save(*args, **kwargs)
+
