@@ -12,9 +12,9 @@ from attachments import views
 
 urlpatterns = [
     path(
-        "<str:public_key>",
+        "<int:pk>/",
         views.RetrieveDestroyAttachmentView.as_view(),
-        name="details-attachment",
+        name="retrieve-delete-attachment",
     ),
     path("", views.ListCreateAttachmentView.as_view(), name="create-list-attachment"),
 ]

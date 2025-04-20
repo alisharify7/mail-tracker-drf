@@ -25,5 +25,5 @@ class AttachmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Attachment
-        exclude = ["id", "attachment_type"]
-        read_only_fields = ["created_time", "modified_time", "public_key"]
+        exclude = ["attachment_type"]
+        read_only_fields = ["created_time", "modified_time", "public_key", "id"]
