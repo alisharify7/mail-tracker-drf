@@ -7,6 +7,7 @@
 * https://github.com/alisharify7/mail-tracker-drf
 """
 
+import mimetypes
 import os
 import uuid
 from datetime import datetime
@@ -30,17 +31,26 @@ class AttachmentType(models.Model):
         __str__(): Returns the name of the attachment type as a string.
     """
 
-    name = models.CharField(
-        verbose_name=_("name"), max_length=256, blank=False, null=False
+    # image, video, application
+    main_type = models.CharField(
+        verbose_name=_("main_type"), max_length=256, blank=False, null=False
     )
 
+    # jpeg, png, pdf
+    sub_type = models.CharField(
+        verbose_name=_("sub_type"), max_length=256, blank=False, null=False
+    )
 
     class Meta:
         verbose_name = _("Attachment Type")
         verbose_name_plural = _("Attachment Types")
+        unique_together = ("main_type", "sub_type")
 
     def __str__(self):
-        return self.name
+        return f"{self.main_type}/{self.sub_type}"
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}({self.main_type!r}, {self.sub_type!r})"
 
 
 def attachment_upload_to(instance, filename):
@@ -75,14 +85,14 @@ class Attachment(models.Model):
     )
     created_time = models.DateTimeField(auto_now_add=True)
     modified_time = models.DateTimeField(auto_now=True)
+    attachment_type = models.ForeignKey(
+        AttachmentType,
 
+        if self.file and not self.attachment_type:
 
     class Meta:
         verbose_name = _("Attachment")
         verbose_name_plural = _("Attachments")
-
-
-    def upload_and_set_url(self, file_obj, bucket: str, key: str) -> str:
         """
         Uploads the given file object to the specified S3-compatible bucket
         (e.g., Arvan S3) and updates this instance's `file` URL accordingly.
