@@ -87,6 +87,12 @@ class Attachment(models.Model):
     modified_time = models.DateTimeField(auto_now=True)
     attachment_type = models.ForeignKey(
         AttachmentType,
+        verbose_name=_("Attachment Type"),
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="attachments",
+    )
 
         if self.file and not self.attachment_type:
 
