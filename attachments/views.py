@@ -8,14 +8,20 @@
 """
 
 from rest_framework.views import APIView
-from rest_framework import status
-from rest_framework.response import Response
+from rest_framework.generics import ListCreateAPIView, RetrieveDestroyAPIView
+
+from attachments.models import Attachment
 from attachments.serializers import AttachmentSerializer
 
 
-class AttachmentView(APIView):
-    def post(self, request, *args, **kwargs):
-        serializer = AttachmentSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class CreateListAttachmentView(ListCreateAPIView):
+    """Create a new attachment or list all attachments with pagination."""
+    queryset = Attachment.objects.all().order_by('-created_time')
+    serializer_class = AttachmentSerializer
+
+
+class RetrieveDestroyAttachmentView(RetrieveDestroyAPIView):
+    serializer_class = AttachmentSerializer
+    queryset = Attachment.objects.all()
+    lookup_field = "public_key"
