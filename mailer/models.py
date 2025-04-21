@@ -9,9 +9,12 @@
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+
+
 from taggit.managers import TaggableManager
 from attachments.models import Attachment
 from common_library.model import TimestampedUUIDBaseModel, TimestampedBaseModel
+
 
 
 class Mail(TimestampedUUIDBaseModel):
@@ -105,3 +108,6 @@ class CarbonCopy(TimestampedBaseModel):
 
     def __str__(self):
         return f"{self.email_address} (Mail #{self.mail_id})"
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}(email_address={self.email_address!r})"
