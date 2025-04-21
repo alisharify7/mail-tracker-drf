@@ -182,12 +182,12 @@ REST_FRAMEWORK = {
 APPEND_SLASH = False
 
 # MongoDb config
-MONGODB_USER=config("MONGODB_USER", cast=str)
-MONGODB_PASSWORD=config("MONGODB_PASSWORD", cast=str, default="")
-MONGODB_HOST=config("MONGODB_HOST", cast=str)
-MONGODB_PORT=config("MONGODB_PORT", cast=int, default=27017)
-MONGODB_EVENT_DB=config("MONGODB_EVENT_DB", cast=str)
-MONGODB_LOG_DB=config("MONGODB_LOG_DB", cast=str)
+MONGODB_USER = config("MONGODB_USER", cast=str)
+MONGODB_PASSWORD = config("MONGODB_PASSWORD", cast=str, default="")
+MONGODB_HOST = config("MONGODB_HOST", cast=str)
+MONGODB_PORT = config("MONGODB_PORT", cast=int, default=27017)
+MONGODB_EVENT_DB = config("MONGODB_EVENT_DB", cast=str)
+MONGODB_LOG_DB = config("MONGODB_LOG_DB", cast=str)
 
 connect(
     host=MONGODB_HOST,
@@ -197,3 +197,18 @@ connect(
     db=MONGODB_EVENT_DB,
     alias="default",
 )
+
+
+# Celery
+CELERY_TASK_TRACK_STARTED = True
+CELERY_BROKER_URL = config(
+    "CELERY_BACKEND_URI", cast=str, default="redis://localhost:6379/0"
+)
+CELERY_RESULT_BACKEND = config(
+    "CELERY_BROKER_URI", cast=str, default="redis://localhost:6379/1"
+)
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = TIME_ZONE
+
