@@ -25,3 +25,15 @@ class ListCreateMailView(ListCreateAPIView):
 class RetrieveDestroyViewMailView(RetrieveDestroyAPIView):
     serializer_class = MailSerializer
     queryset = Mail.objects.all()
+
+
+def test(r):
+    d = datetime.datetime.now() + datetime.timedelta(seconds=5)
+    message = {
+        "subject": "Hello",
+        "body": "<h1>Hello</h1>",
+        "recipient": ["alisharifyofficial@gmail.com"]
+    }
+    print(d)
+    send_email.delay(message=message)
+    return HttpResponse("OK")
