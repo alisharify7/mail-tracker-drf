@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import secrets
 from pathlib import Path
 from decouple import config
+from mongoengine import connect
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -175,7 +177,23 @@ DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", cast=str)
 
 # DRF CONFIG
 REST_FRAMEWORK = {
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 10,
+    "DEFAULT_PAGINATION_CLASS": "common_library.pagination.GlobalPageNumberPagination",
 }
 APPEND_SLASH = False
+
+# MongoDb config
+MONGODB_USER=config("MONGODB_USER", cast=str)
+MONGODB_PASSWORD=config("MONGODB_PASSWORD", cast=str, default="")
+MONGODB_HOST=config("MONGODB_HOST", cast=str)
+MONGODB_PORT=config("MONGODB_PORT", cast=int, default=27017)
+MONGODB_EVENT_DB=config("MONGODB_EVENT_DB", cast=str)
+MONGODB_LOG_DB=config("MONGODB_LOG_DB", cast=str)
+
+connect(
+    host=MONGODB_HOST,
+    port=MONGODB_PORT,
+    username=MONGODB_USER or None,
+    password=MONGODB_PASSWORD or None,
+    db=MONGODB_EVENT_DB,
+    alias="default",
+)
