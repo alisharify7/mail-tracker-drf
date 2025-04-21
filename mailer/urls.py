@@ -7,8 +7,8 @@
 * https://github.com/alisharify7/mail-tracker-drf
 """
 
-from django.urls import path
 from mailer import views
+from django.urls import path
 
 
 urlpatterns = [

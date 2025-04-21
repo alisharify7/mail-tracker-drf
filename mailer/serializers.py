@@ -50,6 +50,7 @@ class MailEventSerializer(serializers.Serializer):
     name = serializers.ChoiceField(required=True, choices=MailEvent.event_type_choices)
 
 
+
 class MailSerializer(serializers.ModelSerializer):
     """
     Serializer for handling Mail model instances, including serialization and deserialization
@@ -92,6 +93,7 @@ class MailSerializer(serializers.ModelSerializer):
         objects = MailEvent.objects.filter(sql_mail_id=obj.id).all()
         data = DumpMailEventSerializer(objects, many=True).data
         return data
+
 
     def create(self, validated_data):
         """
