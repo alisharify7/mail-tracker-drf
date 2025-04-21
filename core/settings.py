@@ -207,8 +207,7 @@ CELERY_BROKER_URL = config(
 CELERY_RESULT_BACKEND = config(
     "CELERY_BROKER_URI", cast=str, default="redis://localhost:6379/1"
 )
-CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = TIME_ZONE
-

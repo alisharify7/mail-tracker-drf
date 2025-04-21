@@ -10,8 +10,11 @@
 from mailer import views
 from django.urls import path
 
-
 urlpatterns = [
     path("", views.ListCreateMailView.as_view(), name="list-create-mail"),
-    path("<int:pk>/", views.RetrieveDestroyViewMailView.as_view(), name="retrieve-delete-mail"),
+    path(
+        "<int:pk>/",
+        views.RetrieveDestroyViewMailView.as_view(),
+        name="retrieve-delete-mail",
+    ),
 ]

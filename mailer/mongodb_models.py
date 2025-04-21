@@ -8,13 +8,20 @@
 """
 
 import datetime
-from mongoengine import Document, ObjectIdField, StringField, IntField, URLField, DateTimeField
+from mongoengine import (
+    Document,
+    ObjectIdField,
+    StringField,
+    IntField,
+    URLField,
+    DateTimeField,
+)
+
 
 class MailEvent(Document):
     """MongoDB Collection definition for Mail Events"""
-    meta = {
-        'db_alias': 'default'
-    }
+
+    meta = {"db_alias": "default"}
 
     LINK_CLICK = "link-click"
     OPEN = "open"

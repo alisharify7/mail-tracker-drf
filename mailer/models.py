@@ -16,7 +16,6 @@ from attachments.models import Attachment
 from common_library.model import TimestampedUUIDBaseModel, TimestampedBaseModel
 
 
-
 class Mail(TimestampedUUIDBaseModel):
     """
     Represents an email to be sent to a recipient.

@@ -11,7 +11,7 @@ app = Celery("core")
 #   should have a `CELERY_` prefix.
 app.config_from_object("django.conf:settings", namespace="CELERY")
 app.conf.enable_utc = True
-app.conf.timezone = 'UTC'
+app.conf.timezone = "UTC"
 # Load task modules from all registered Django apps.
 app.autodiscover_tasks()
 # https://docs.celeryq.dev/en/latest/django/first-steps-with-django.html

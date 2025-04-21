@@ -19,10 +19,11 @@ class DumpMailEventSerializer(serializers.Serializer):
 
     It includes logic to conditionally exclude the 'redirect_to' field when the event type is not 'link-click'.
     """
+
     event_type = serializers.CharField()
     created_time = serializers.DateTimeField()
     modified_time = serializers.DateTimeField()
-    redirect_to = serializers.URLField(required=False, allow_null=True) # dynamic
+    redirect_to = serializers.URLField(required=False, allow_null=True)  # dynamic
 
     def to_representation(self, instance):
         """
@@ -36,8 +37,8 @@ class DumpMailEventSerializer(serializers.Serializer):
             dict: The serialized data with 'redirect_to' excluded for non-link-click events.
         """
         ret = super().to_representation(instance)
-        if ret.get('event_type') != MailEvent.LINK_CLICK:
-            ret.pop('redirect_to', None)
+        if ret.get("event_type") != MailEvent.LINK_CLICK:
+            ret.pop("redirect_to", None)
         return ret
 
 
@@ -47,8 +48,8 @@ class MailEventSerializer(serializers.Serializer):
 
     This serializer is used for creating new MailEvent records and validating their input.
     """
-    name = serializers.ChoiceField(required=True, choices=MailEvent.event_type_choices)
 
+    name = serializers.ChoiceField(required=True, choices=MailEvent.event_type_choices)
 
 
 class MailSerializer(serializers.ModelSerializer):
@@ -59,13 +60,18 @@ class MailSerializer(serializers.ModelSerializer):
     This serializer is responsible for representing Mail instances and handling the creation
     of associated MailEvent records.
     """
+
     status = serializers.SerializerMethodField()
-    events_list = MailEventSerializer(many=True, required=False)  # input for creating events
-    events = serializers.SerializerMethodField()  # output, representing associated events
+    events_list = MailEventSerializer(
+        many=True, required=False
+    )  # input for creating events
+    events = (
+        serializers.SerializerMethodField()
+    )  # output, representing associated events
 
     class Meta:
         model = Mail
-        fields = '__all__'
+        fields = "__all__"
         read_only_fields = ["created_time", "modified_time", "public_key", "id"]
 
     def get_status(self, obj):
@@ -94,7 +100,6 @@ class MailSerializer(serializers.ModelSerializer):
         data = DumpMailEventSerializer(objects, many=True).data
         return data
 
-
     def create(self, validated_data):
         """
         Override the default create method to handle creation of a Mail instance
@@ -107,20 +112,19 @@ class MailSerializer(serializers.ModelSerializer):
         Returns:
             Mail: The created Mail instance.
         """
-        events_data = validated_data.pop('events_list', [])
+        events_data = validated_data.pop("events_list", [])
         mail = super().create(validated_data)
 
         # If no events are provided, default to an 'open' event
-        events_data = events_data if len(events_data) > 0 else [{'name': 'open'}]
+        events_data = events_data if len(events_data) > 0 else [{"name": "open"}]
 
         for event in events_data:
-            event_type = event['name']
-            payload = {
-                "event_type": event_type,
-                "sql_mail_id": mail.id
-            }
+            event_type = event["name"]
+            payload = {"event_type": event_type, "sql_mail_id": mail.id}
             if event_type == MailEvent.LINK_CLICK:
-                payload["redirect_to"] = "https://fake.ir"  # Example URL for link-click events
+                payload["redirect_to"] = (
+                    "https://fake.ir"  # Example URL for link-click events
+                )
 
             event_object = MailEvent(**payload)
             event_object.save()
