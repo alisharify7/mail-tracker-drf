@@ -41,7 +41,6 @@ class Mail(TimestampedUUIDBaseModel):
     SENT = 2
     FAILED = 3
     UNKNOWN = 4
-
     STATUS_CHOICES = (
         (PENDING, _("Pending")),
         (SENT, _("Sent")),
@@ -60,7 +59,7 @@ class Mail(TimestampedUUIDBaseModel):
     body = models.CharField(
         verbose_name=_("body"), max_length=8096, blank=False, null=False
     )
-    recipient = models.EmailField(
+    recipient = models.EmailField( #TODO: recipients can be a list :) instead of single recipient
         verbose_name=_("recipient"), max_length=254, blank=False, null=False
     )
     scheduled_time = models.DateTimeField(
@@ -82,7 +81,7 @@ class Mail(TimestampedUUIDBaseModel):
         )
 
     def __str__(self):
-        return f"{self.pk}-{self.subject}"
+        return f"MailObject {self.pk}-{self.subject}"
 
 
 class CarbonCopy(TimestampedBaseModel):
