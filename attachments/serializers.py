@@ -19,11 +19,10 @@ class AttachmentTypeSerializer(serializers.ModelSerializer):
 
 
 class AttachmentSerializer(serializers.ModelSerializer):
-    attachment_type_detail = AttachmentTypeSerializer(
-        source="attachment_type", read_only=True
-    )
+    attachment_type = AttachmentTypeSerializer(required=False)
 
     class Meta:
         model = Attachment
-        exclude = ["attachment_type"]
-        read_only_fields = ["created_time", "modified_time", "public_key", "id"]
+        fields = "__all__"
+        read_only_fields = ["created_time", "modified_time", "public_key", "id", "attachment_type"]
+
