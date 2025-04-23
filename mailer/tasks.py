@@ -5,9 +5,9 @@ from django.conf import settings
 
 
 @shared_task(bind=True, max_retries=5, default_retry_delay=10)
-def send_email(self: Task, message, obj_id):
+def send_email(self: Task, message, object_id):
     try:
-        obj = Mail.objects.get(id=obj_id)
+        obj = Mail.objects.get(id=object_id)
     except Mail.DoesNotExist:
         return None
 
@@ -15,7 +15,8 @@ def send_email(self: Task, message, obj_id):
         from_email=settings.DEFAULT_FROM_EMAIL,
         subject=message["subject"],
         html_message=message["body"],
-        recipient_list=message["recipient"],
+        recipient_list=[message["recipient"]],
         fail_silently=True,
+        message=message["body"],
     )
-    print(f"Sending email {result}")
+    print(f"Sending email {result} {message}")
