@@ -1,4 +1,4 @@
-FROM docker.iranserver.com/python:3.13.3-alpine3.21
+FROM docker.iranserver.com/python:3.13.3
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -9,13 +9,10 @@ COPY requirements.txt .
 
 RUN pip install --upgrade pip gunicorn && \
     pip install -r requirements.txt
-
 COPY . /app
-
-RUN python manage.py makemigrations
-RUN python manage.py migrate
-
-#TODO: instead of running migrations and running app in docker file create an entrypoint script for this
+RUN chmod +x /app/scripts/*.sh
+RUN apt-get update
+RUN apt-get install curl -y
 EXPOSE 8000
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "core.wsgi:application"]
+CMD ["bash", "/app/scripts/start_web.sh"]
