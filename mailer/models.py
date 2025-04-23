@@ -59,7 +59,7 @@ class Mail(TimestampedUUIDBaseModel):
     body = models.CharField(
         verbose_name=_("body"), max_length=8096, blank=False, null=False
     )
-    recipient = models.EmailField( #TODO: recipients can be a list :) instead of single recipient
+    recipient = models.EmailField(  # TODO: recipients can be a list :) instead of single recipient
         verbose_name=_("recipient"), max_length=254, blank=False, null=False
     )
     scheduled_time = models.DateTimeField(

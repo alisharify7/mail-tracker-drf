@@ -24,5 +24,10 @@ class AttachmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Attachment
         fields = "__all__"
-        read_only_fields = ["created_time", "modified_time", "public_key", "id", "attachment_type"]
-
+        read_only_fields = [
+            "created_time",
+            "modified_time",
+            "public_key",
+            "id",
+            "attachment_type",
+        ]

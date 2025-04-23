@@ -32,7 +32,7 @@ def test(r):
     message = {
         "subject": "Hello",
         "body": "<h1>Hello</h1>",
-        "recipient": ["alisharifyofficial@gmail.com"]
+        "recipient": ["alisharifyofficial@gmail.com"],
     }
     print(d)
     send_email.delay(message=message)

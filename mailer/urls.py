@@ -19,5 +19,5 @@ urlpatterns = [
         views.RetrieveDestroyViewMailView.as_view(),
         name="retrieve-delete-mail",
     ),
-    path("test", test)
+    path("test", test),
 ]
