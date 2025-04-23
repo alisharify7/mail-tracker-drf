@@ -6,6 +6,7 @@
 * Copyright (c) 2025 - ali sharifi
 * https://github.com/alisharify7/mail-tracker-drf
 """
+
 from random import choices
 
 from rest_framework import serializers
@@ -14,6 +15,7 @@ from mailer.models import Mail, CarbonCopy
 from mailer.mongodb_models import MailEvent
 from attachments.serializers import Attachment, AttachmentSerializer
 
+
 class MailEventSerializer(serializers.Serializer):
     """
     Serializer for validating and serializing mail event data when creating or updating a Mail instance.
@@ -21,13 +23,14 @@ class MailEventSerializer(serializers.Serializer):
     This serializer is used for creating new MailEvent records and validating their input.
     """
 
-    type = serializers.ChoiceField(required=True, source="event_type", choices=MailEvent.event_type_choices)
+    type = serializers.ChoiceField(
+        required=True, source="event_type", choices=MailEvent.event_type_choices
+    )
     redirect_to = serializers.URLField(required=False)
 
     class Meta:
         fields = ("type",)
         read_only_fields = ("type",)
-
 
     def to_representation(self, instance):
         ret = super().to_representation(instance)
@@ -40,6 +43,7 @@ class AttachmentRelatedField(serializers.PrimaryKeyRelatedField):
     def to_representation(self, value):
         # Serialize the related Attachment instance using AttachmentSerializer
         return AttachmentSerializer(value).data
+
 
 class CarbonCopySerializer(serializers.Serializer):
     email_address = serializers.EmailField()
@@ -57,10 +61,7 @@ class MailSerializer(serializers.ModelSerializer):
     status = serializers.SerializerMethodField()
     events = MailEventSerializer(many=True, required=False)
 
-    attachments = AttachmentRelatedField(
-        many=True,
-        queryset=Attachment.objects.all()
-    )
+    attachments = AttachmentRelatedField(many=True, queryset=Attachment.objects.all())
     carbon_copies = CarbonCopySerializer(
         many=True,
     )
@@ -82,8 +83,6 @@ class MailSerializer(serializers.ModelSerializer):
         """
         return obj.get_status_display()
 
-
-
     def create(self, validated_data):
         """
         Override the default create method to handle creation of a Mail instance
@@ -101,9 +100,9 @@ class MailSerializer(serializers.ModelSerializer):
         mail = super().create(validated_data)
 
         for carbon in carbon_copies:
-            print(carbon)
-            carbon = CarbonCopy.objects.create(mail=mail, email_address=carbon["email_address"])
-
+            carbon = CarbonCopy.objects.create(
+                mail=mail, email_address=carbon["email_address"]
+            )
 
         # If no events are provided, default to an 'open' event
         events_data = events_data if len(events_data) > 0 else [{"event_type": "open"}]
@@ -116,9 +115,9 @@ class MailSerializer(serializers.ModelSerializer):
                     "https://fake.ir"  # Example URL for link-click events
                 )
 
-            event_object = MailEvent(**payload)
-            event_object.save()
-            event_list.append(event_object)
+            event_list.append(MailEvent(**payload))
 
+        r = MailEvent.objects.insert(event_list)
+        print(r)
         mail.events = event_list
         return mail
