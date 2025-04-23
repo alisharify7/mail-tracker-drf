@@ -182,7 +182,7 @@ REST_FRAMEWORK = {
 APPEND_SLASH = False
 
 # MongoDb config
-MONGODB_USER = config("MONGODB_USER", cast=str)
+MONGODB_USER = config("MONGODB_USERNAME", cast=str)
 MONGODB_PASSWORD = config("MONGODB_PASSWORD", cast=str, default="")
 MONGODB_HOST = config("MONGODB_HOST", cast=str)
 MONGODB_PORT = config("MONGODB_PORT", cast=int, default=27017)
