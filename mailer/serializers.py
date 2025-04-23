@@ -10,7 +10,7 @@ from random import choices
 
 from rest_framework import serializers
 
-from mailer.models import Mail
+from mailer.models import Mail, CarbonCopy
 from mailer.mongodb_models import MailEvent
 from attachments.serializers import Attachment, AttachmentSerializer
 
@@ -41,6 +41,8 @@ class AttachmentRelatedField(serializers.PrimaryKeyRelatedField):
         # Serialize the related Attachment instance using AttachmentSerializer
         return AttachmentSerializer(value).data
 
+class CarbonCopySerializer(serializers.Serializer):
+    email_address = serializers.EmailField()
 
 
 class MailSerializer(serializers.ModelSerializer):
@@ -58,6 +60,9 @@ class MailSerializer(serializers.ModelSerializer):
     attachments = AttachmentRelatedField(
         many=True,
         queryset=Attachment.objects.all()
+    )
+    carbon_copies = CarbonCopySerializer(
+        many=True,
     )
 
     class Meta:
@@ -92,7 +97,13 @@ class MailSerializer(serializers.ModelSerializer):
             Mail: The created Mail instance.
         """
         events_data = validated_data.pop("events", [])
+        carbon_copies = validated_data.pop("carbon_copies", [])
         mail = super().create(validated_data)
+
+        for carbon in carbon_copies:
+            print(carbon)
+            carbon = CarbonCopy.objects.create(mail=mail, email_address=carbon["email_address"])
+
 
         # If no events are provided, default to an 'open' event
         events_data = events_data if len(events_data) > 0 else [{"event_type": "open"}]
