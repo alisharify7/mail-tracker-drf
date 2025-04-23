@@ -118,6 +118,5 @@ class MailSerializer(serializers.ModelSerializer):
             event_list.append(MailEvent(**payload))
 
         r = MailEvent.objects.insert(event_list)
-        print(r)
         mail.events = event_list
         return mail
