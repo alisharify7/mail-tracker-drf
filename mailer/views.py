@@ -21,19 +21,25 @@ class ListCreateMailView(ListCreateAPIView):
     serializer_class = MailSerializer
     queryset = Mail.objects.all()
 
+    def perform_create(self, serializer):
+        mail = serializer.save()
+        payload = {
+            "subject": mail.subject,
+            "body": mail.body,
+            "recipient": mail.recipient,
+        }
+        if mail.scheduled_time:
+            return send_email.apply_async(
+                args=(payload, mail.id),
+                eta=mail.scheduled_time,
+            )
+        return send_email.delay(
+            message=payload,
+            object_id=mail.id,
+        )
+
+
 
 class RetrieveDestroyViewMailView(RetrieveDestroyAPIView):
     serializer_class = MailSerializer
     queryset = Mail.objects.all()
-
-
-def test(r):
-    d = datetime.datetime.now() + datetime.timedelta(seconds=5)
-    message = {
-        "subject": "Hello",
-        "body": "<h1>Hello</h1>",
-        "recipient": ["alisharifyofficial@gmail.com"],
-    }
-    print(d)
-    send_email.delay(message=message)
-    return HttpResponse("OK")
