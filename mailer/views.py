@@ -39,7 +39,6 @@ class ListCreateMailView(ListCreateAPIView):
         )
 
 
-
 class RetrieveDestroyViewMailView(RetrieveDestroyAPIView):
     serializer_class = MailSerializer
     queryset = Mail.objects.all()
