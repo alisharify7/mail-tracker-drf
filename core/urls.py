@@ -22,4 +22,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("mail/", include("mailer.urls")),
     path("attachment/", include("attachments.urls")),
+    path("hocks/", include("tracking.urls")),
 ]
