@@ -110,8 +110,8 @@ class Attachment(TimestampedUUIDBaseModel):
             *args: Positional arguments to be passed to the parent's `delete()` method.
             **kwargs: Keyword arguments to be passed to the parent's `delete()` method.
         """
-        if self.file:
-            self.file.delete()  # Deletes the file from storage (S3, local, etc.)
+        # if self.file: # Moved to signals sections
+        #     self.file.delete()  # Deletes the file from storage (S3, local, etc.)
         super().delete(
             *args, **kwargs
         )  # Call the parent delete method to remove the record from the database
