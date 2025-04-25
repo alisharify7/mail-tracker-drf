@@ -40,8 +40,6 @@ services:
       context: .
       dockerfile: Dockerfile
     command: [ "bash", "./scripts/setup_migration.sh" ]
-    volumes:
-      - .:/app
     depends_on:
       - postgres
     networks:
@@ -108,8 +106,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    volumes:
-      - .:/app
     depends_on:
       - web
       - redis
@@ -126,8 +122,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    volumes:
-      - .:/app
     depends_on:
       - web
       - redis
