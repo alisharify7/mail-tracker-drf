@@ -1,0 +1,77 @@
+[project]
+name = "mail-tracker"
+version = "0.1.0"
+description = "Django DRF app for tracking mails"
+requires-python = ">=3.12"
+dependencies = [
+    "celery>=5.5.2",
+    "decouple>=0.0.7",
+    "django>=5.2.1",
+    "django-storages>=1.14.6",
+    "django-taggit>=6.1.0",
+    "djangorestframework>=3.16.0",
+    "mongoengine>=0.29.1",
+    "redis>=6.2.0",
+]
+
+[dependency-groups]
+dev = [
+    "ipython>=9.2.0",
+]
+
+
+[tool.black]
+line-length = 88
+target-version = ['py310', 'py311', 'py312', 'py313']
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | venv
+  | .venv
+  | data
+)/
+'''
+fast = true
+color = true
+verbose = true
+check = false
+
+
+[tool.flake8]
+max-line-length = 88
+ignore = [
+    "E501", # Ignore line length warnings
+    "W503", # Ignore "line break before binary operator" warnings
+]
+exclude = [
+    ".git",
+    ".tox",
+    ".venv",
+    "build",
+    "dist",
+    "_build"
+]
+max-complexity = 10
+select = [
+    "C", # Cyclomatic complexity checks
+    "E", # Errors
+    "F", # Pyflakes checks
+    "W", # Warnings
+]
+
+[tool.mypy]
+files = "."
+disallow_untyped-calls = true
+disallow_untyped-defs = true
+strict = true
+
+[tool.profiling]
+profiling_python_version = ["py310", "py311", "py312"]
