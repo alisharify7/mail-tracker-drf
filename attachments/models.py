@@ -15,7 +15,7 @@ from datetime import datetime
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from common_library.model import TimestampedUUIDBaseModel, TimestampedBaseModel
+from common_library.model import TimestampedULIDBaseModel, TimestampedBaseModel
 
 
 class AttachmentType(TimestampedBaseModel):
@@ -68,7 +68,7 @@ def attachment_upload_to(instance, filename):
     return f"attachments/{date_path}/{new_filename}"
 
 
-class Attachment(TimestampedUUIDBaseModel):
+class Attachment(TimestampedULIDBaseModel):
     """
     Represents a file attachment associated with an email or any other entity.
 

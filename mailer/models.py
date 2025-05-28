@@ -6,17 +6,19 @@
 * Copyright (c) 2025 - ali sharifi
 * https://github.com/alisharify7/mail-tracker-drf
 """
-
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
 from taggit.managers import TaggableManager
 from attachments.models import Attachment
-from common_library.model import TimestampedUUIDBaseModel, TimestampedBaseModel
+from common_library.model import TimestampedULIDBaseModel, TimestampedBaseModel
+
+class Recipients(TimestampedULIDBaseModel):
+    email_address = models.EmailField(null=False, unique=True)
 
 
-class Mail(TimestampedUUIDBaseModel):
+class Mail(TimestampedULIDBaseModel):
     """
     Represents an email to be sent to a recipient.
 
@@ -37,21 +39,18 @@ class Mail(TimestampedUUIDBaseModel):
         public_key (str): A unique public identifier (e.g., for tracking links).
     """
 
-    PENDING = 1
-    SENT = 2
-    FAILED = 3
-    UNKNOWN = 4
-    STATUS_CHOICES = (
-        (PENDING, _("Pending")),
-        (SENT, _("Sent")),
-        (FAILED, _("Failed")),
-        (UNKNOWN, _("Unknown")),
-    )
-
     class Meta:
-        # db_table = "mail"
+        db_table = "mail"
         verbose_name = _("Mail")
         verbose_name_plural = _("Mails")
+        app_label = "mailer"
+
+
+    class StatusChoices(models.IntegerChoices):
+        PENDING = 1
+        SENT = 2
+        FAILED = 3
+        UNKNOWN = 4
 
     subject = models.CharField(
         verbose_name=_("subject"), max_length=256, blank=False, null=False
@@ -59,18 +58,22 @@ class Mail(TimestampedUUIDBaseModel):
     body = models.CharField(
         verbose_name=_("body"), max_length=8096, blank=False, null=False
     )
-    recipient = models.EmailField(  # TODO: recipients can be a list :) instead of single recipient
-        verbose_name=_("recipient"), max_length=254, blank=False, null=False
+    recipient = models.ManyToManyField(
+        Recipients,
+        verbose_name=_("recipient"),
+        blank=False,
+        null=False
     )
     scheduled_time = models.DateTimeField(
-        verbose_name=_("scheduled time"), blank=True, null=True
+        verbose_name=_("scheduled time"),
+        blank=True, null=True
     )
 
     attachments = models.ManyToManyField(Attachment, related_name="mails", blank=True)
 
     status = models.PositiveSmallIntegerField(
-        choices=STATUS_CHOICES,
-        default=STATUS_CHOICES[0][0],
+        choices=StatusChoices.choices,
+        default=StatusChoices.PENDING,
     )
 
     tags = TaggableManager()
