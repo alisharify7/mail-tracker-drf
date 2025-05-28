@@ -5,3 +5,8 @@
 - [x] add docker file
 - [x] add docker compose
 - [x] add email config
+- [ ] redesign db schema and diagram
+- [ ] add keycloak support for authentication just for fun, and learning ;)
+- [x] add uv support
+- [ ] update docker compose for development 
+- [ ] add runner script for migrate and running gunicorn etc
