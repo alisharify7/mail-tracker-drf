@@ -6,109 +6,132 @@
 * Copyright (c) 2025 - ali sharifi
 * https://github.com/alisharify7/mail-tracker-drf
 """
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth import get_user_model
 
 
 from taggit.managers import TaggableManager
-from attachments.models import Attachment
-from common_library.model import TimestampedULIDBaseModel, TimestampedBaseModel
-
-class Recipients(TimestampedULIDBaseModel):
-    email_address = models.EmailField(null=False, unique=True)
+from common_library.db import TimestampedULIDBaseModel, UlidField
 
 
-class Mail(TimestampedULIDBaseModel):
+User = get_user_model()
+
+
+class BadgePixelTracker(TimestampedULIDBaseModel):
     """
-    Represents an email to be sent to a recipient.
-
-    This model contains the essential data required for composing and scheduling an email, including:
-    - subject and body of the email,
-    - recipient's email address,
-    - scheduled time for sending the email (optional),
-    - timestamps for creation and modification,
-    - a unique public_key for tracking or identifying the mail externally.
-
-    Fields:
-        subject (str): The subject of the email.
-        body (str): The content/body of the email.
-        recipient (str): The recipient's email address.
-        scheduled_time (datetime): Optional time to schedule the email to be sent.
-        created_time (datetime): Timestamp when the email object was created.
-        modified_time (datetime): Timestamp for the last update to the email object.
-        public_key (str): A unique public identifier (e.g., for tracking links).
+    Tracks a badge pixel associated with a user.
+    Useful for embedding tracking pixels in emails or badges to monitor access.
+    Supports tagging for flexible categorization.
     """
+
+    title = models.CharField(
+        max_length=256,
+        null=True,
+        help_text="Optional descriptive title for the badge tracker.",
+    )
+    uid = UlidField(
+        verbose_name=_("uid"),
+        help_text="Universally unique identifier for this badge tracker.",
+    )
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, help_text="User who owns this badge tracker."
+    )
+    tags = TaggableManager(help_text="Tags for categorizing this badge tracker.")
 
     class Meta:
-        db_table = "mail"
-        verbose_name = _("Mail")
-        verbose_name_plural = _("Mails")
+        db_table = "badge-pixel-tracker"
+        verbose_name = _("badge pixel tracker")
+        verbose_name_plural = _("pixel trackers")
         app_label = "mailer"
 
-
-    class StatusChoices(models.IntegerChoices):
-        PENDING = 1
-        SENT = 2
-        FAILED = 3
-        UNKNOWN = 4
-
-    subject = models.CharField(
-        verbose_name=_("subject"), max_length=256, blank=False, null=False
-    )
-    body = models.CharField(
-        verbose_name=_("body"), max_length=8096, blank=False, null=False
-    )
-    recipient = models.ManyToManyField(
-        Recipients,
-        verbose_name=_("recipient"),
-        blank=False,
-        null=False
-    )
-    scheduled_time = models.DateTimeField(
-        verbose_name=_("scheduled time"),
-        blank=True, null=True
-    )
-
-    attachments = models.ManyToManyField(Attachment, related_name="mails", blank=True)
-
-    status = models.PositiveSmallIntegerField(
-        choices=StatusChoices.choices,
-        default=StatusChoices.PENDING,
-    )
-
-    tags = TaggableManager()
-
-    def __repr__(self):
-        return (
-            f"{self.__class__.__name__}(subject={self.subject!r}, body={self.body!r})"
-        )
-
     def __str__(self):
-        return f"MailObject {self.pk}-{self.subject}"
+        return f"Badge Pixel Tracker {self.pk} - {self.title or 'Untitled'}"
 
 
-class CarbonCopy(TimestampedBaseModel):
+class BadgePixelTrackerLogs(TimestampedULIDBaseModel):
     """
-    Represents a CC recipient for an email.
+    Stores logs for interactions with a badge pixel.
+    Captures metadata such as IP address, operating system, and request headers.
     """
 
-    email_address = models.EmailField(
-        verbose_name=_("email address"), max_length=254, blank=False, null=False
-    )
-    mail = models.ForeignKey(
-        Mail,
-        verbose_name=_("mail"),
+    badge = models.ForeignKey(
+        BadgePixelTracker,
         on_delete=models.CASCADE,
-        related_name="carbon_copies",
+        help_text="Reference to the associated badge tracker.",
+    )
+    os = models.CharField(max_length=256, help_text="Operating system of the client.")
+    ip = models.GenericIPAddressField(help_text="IP address of the client.")
+    headers = models.JSONField(help_text="Full request headers from the client.")
+    user_agent = models.CharField(
+        max_length=256, help_text="User agent string of the client's browser."
     )
 
     class Meta:
-        # db_table = "carbon_copy"
-        verbose_name = _("Carbon Copy")
-        verbose_name_plural = _("Carbon Copies")
+        db_table = "badge-pixel-tracker-logs"
+        verbose_name = _("badge pixel tracker log")
+        verbose_name_plural = _("badge pixel tracker logs")
+        app_label = "mailer"
 
     def __str__(self):
-        return f"{self.email_address} (Mail #{self.mail_id})"
+        return f"Log for Badge {self.badge_id} - IP: {self.ip}"
 
-    def __repr__(self):
-        return f"{self.__class__.__name__}(email_address={self.email_address!r})"
+
+class RedirectLinkTracker(TimestampedULIDBaseModel):
+    """
+    Represents a redirect tracking object for monitoring link usage.
+    Each instance stores the destination URL and optional title metadata,
+    along with ownership tied to a user.
+    """
+
+    title = models.CharField(
+        max_length=256, null=True, help_text="Optional title for the redirect link."
+    )
+    redirect_to = models.URLField(
+        null=False, help_text="The destination URL to redirect to."
+    )
+    uid = UlidField(verbose_name=_("uid"))
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, help_text="Owner of the redirect link."
+    )
+
+    class Meta:
+        db_table = "redirect-link-tracker"
+        verbose_name = _("redirect link tracker")
+        verbose_name_plural = _("redirects tracker")
+        app_label = "mailer"
+
+    def __str__(self):
+        return f"Redirect Tracker {self.pk} - {self.title or 'No Title'}"
+
+
+class RedirectLinkTrackerLog(TimestampedULIDBaseModel):
+    """
+    Logs each access to a redirect link.
+    Captures request metadata such as IP, headers, and user agent for auditing and analytics.
+    """
+
+    redirect = models.ForeignKey(
+        RedirectLinkTracker,
+        on_delete=models.CASCADE,
+        related_name="logs",
+        help_text="Reference to the redirect link being accessed.",
+    )
+    ip = models.GenericIPAddressField(
+        help_text="IP address of the client accessing the redirect link."
+    )
+    os = models.CharField(max_length=256, help_text="Operating system of the client.")
+    user_agent = models.CharField(
+        max_length=512, help_text="User agent string of the client."
+    )
+    headers = models.JSONField(help_text="Complete request headers from the client.")
+
+    class Meta:
+        db_table = "redirect-link-tracker-logs"
+        verbose_name = _("redirect link tracker log")
+        verbose_name_plural = _("redirect link tracker logs")
+        app_label = "mailer"
+
+    def __str__(self):
+        return f"Redirect Log {self.pk} for {self.redirect_id} - IP: {self.ip}"

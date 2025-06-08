@@ -7,10 +7,10 @@ class UlidField(models.CharField):
     description = _("Universally Unique Lexicographically Sortable Identifier")
 
     def __init__(self, *args, **kwargs):
-        kwargs.setdefault('max_length', 26)
-        kwargs.setdefault('editable', False)
-        kwargs.setdefault('unique', True)
-        kwargs.setdefault('blank', True)
+        kwargs.setdefault("max_length", 26)
+        kwargs.setdefault("editable", False)
+        kwargs.setdefault("unique", True)
+        kwargs.setdefault("blank", True)
         super().__init__(*args, **kwargs)
 
     def pre_save(self, model_instance, add):

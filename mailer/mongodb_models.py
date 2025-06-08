@@ -14,7 +14,10 @@ from mongoengine import (
     StringField,
     IntField,
     URLField,
-    DateTimeField, ReferenceField, DictField, BooleanField,
+    DateTimeField,
+    ReferenceField,
+    DictField,
+    BooleanField,
 )
 
 
@@ -52,7 +55,7 @@ class MailEventLog(Document):
             "ip_address",
             "created_time",
             "is_bot",
-        ]
+        ],
     }
 
     event = ReferenceField(MailEvent, required=True)
@@ -77,4 +80,3 @@ class MailEventLog(Document):
     def _save_update(self, *args, **kwargs):
         self.modified_time = datetime.datetime.now(datetime.UTC)
         super()._save_update(*args, **kwargs)
-
